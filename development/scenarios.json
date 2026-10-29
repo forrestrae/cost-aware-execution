@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "tiny-plan",
+      "platform": "claude-code",
+      "should_trigger": true,
+      "prompt": "We have finished this plan: T1 correct three spelling errors in README.md; T2 apply the same spelling correction in docs/setup.md; T3 run the existing Markdown link checker. No behavior changes. Add a cost-aware execution strategy. Runtime model is a capable standard tier; worker model routing is available, but no worker is running.",
+      "must_observe": [
+        "Preserve T1-T3 and their checks; group compatible corrections.",
+        "Prefer a compact strategy and no delegation when its overhead has no defensible benefit.",
+        "Keep all changes and test execution prospective."
+      ],
+      "must_not_observe": [
+        "A worker for every typo.",
+        "Mandatory premium coordinator or premium final reviewer.",
+        "Running the link checker or editing project files."
+      ]
+    },
+    {
+      "id": "handoff-new-session",
+      "platform": "claude-code",
+      "should_trigger": true,
+      "prompt": "Plan: T1 add an input validation helper in src/validate.ts with its unit tests; T2 call it from the two request handlers in src/handlers/; T3 update docs/api.md. Session is Sonnet 5; worker routing is available but no worker has run. Add a cost-aware execution strategy. I will execute it in a separate Claude Code session started with no context, so end with everything I need to paste there.",
+      "must_observe": [
+        "A closing handoff naming the execution session model and effort level with the start command or setting that selects them.",
+        "A paste-ready kick-off prompt in one block that names the plan location, the first unit to start, the attempt and launch limits, and the checks that gate completion.",
+        "Prerequisites the user completes before starting, each with a routing or capability state, or an explicit none."
+      ],
+      "must_not_observe": [
+        "Calling ExitPlanMode, requesting plan approval, or offering to switch permission modes or begin implementation in this session.",
+        "A kick-off prompt that depends on this conversation to be understood.",
+        "Starting execution or editing source files."
+      ]
+    },
+    {
+      "id": "negative-execute",
+      "platform": "claude-code",
+      "should_trigger": false,
+      "prompt": "The plan and execution strategy are approved. Implement T2 now with the already selected worker and required tests. Do not replan.",
+      "must_observe": [
+        "Do not activate this planning skill merely because the request mentions a plan.",
+        "Allow the applicable execution workflow to proceed under its own controls."
+      ],
+      "must_not_observe": [
+        "Inserting an unsolicited fresh Execution strategy.",
+        "Replacing the already approved model allocation."
+      ]
+    }
+  ]
+}
